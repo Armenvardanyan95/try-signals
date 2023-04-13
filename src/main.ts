@@ -1,7 +1,17 @@
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { provideHttpClient } from "@angular/common/http";
+import { bootstrapApplication } from "@angular/platform-browser";
+import { Routes, provideRouter } from "@angular/router";
+import { AppComponent } from "./app/app.component";
+import { CountriesComponent } from "./app/countries.component";
+import { ToDoListComponent } from "./app/to-do-list.component";
 
-import { AppModule } from './app/app.module';
-
-
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
+const routes = [
+  { path: "", component: CountriesComponent, pathMatch: "full" },
+  { path: "todos", component: ToDoListComponent },
+] satisfies Routes;
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideRouter(routes),
+    provideHttpClient(),
+  ],
+});
