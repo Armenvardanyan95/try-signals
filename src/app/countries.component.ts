@@ -1,15 +1,9 @@
 import { JsonPipe, NgFor } from '@angular/common';
-import { Component, Signal, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { Observable } from 'rxjs';
 import { CountriesService } from './countries.service';
-
-function toSignal<T>(source$ : Observable<T>, initialValue: T): Signal<T> {
-  const sig = signal(initialValue);
-  source$.subscribe(notif => sig.set(notif));
-  return sig;
-}
+import { toSignal } from './to-signal';
 
 @Component({
   selector: 'app-countries',
