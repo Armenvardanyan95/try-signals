@@ -1,9 +1,9 @@
 import { JsonPipe, NgFor } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { CountriesService } from './countries.service';
-import { toSignal } from './to-signal';
 
 @Component({
   selector: 'app-countries',
@@ -34,7 +34,7 @@ import { toSignal } from './to-signal';
 export class CountriesComponent {
   countriesService = inject(CountriesService);
   query = signal('');
-  allCountries = toSignal(this.countriesService.getCountries(), []);
+  allCountries = toSignal(this.countriesService.getCountries(), { initialValue: []});
   countries = computed(() => {
     return this.allCountries().filter(
       c => c.name.common.toLowerCase().includes(this.query().toLowerCase()),
