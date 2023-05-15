@@ -1,31 +1,57 @@
-import { WritableSignal, Signal, signal } from "@angular/core";
+import { Signal, signal } from "@angular/core";
 
-type StoreDefinition<
+type StoreMetadata<
   StateKey extends string,
-  ComputedKey extends string,
-  State extends Record<StateKey, WritableSignal<any>>
+  State extends Record<StateKey, any>
 > = {
-  state: State;
-  computed?: (signals: State) => Record<ComputedKey, Signal<any>>;
+  initialState: State;
 };
 
-function createStore<
-  StateKey extends string,
-  ComputedKey extends string,
-  State extends Record<StateKey, any>
->(definition: StoreDefinition<StateKey, ComputedKey, State>) {
-  const { state, computed } = definition;
-  return {
-    ...state,
-    ...computed?.(state),
-  };
+// export function createSignalStore<
+//   StateKey extends string,
+//   State extends Record<StateKey, any>
+// >({ initialState }: StoreMetadata<StateKey, State>) {
+//   const state = {} as any;
+
+//   for (const key in initialState) {
+//     state[key as unknown as StateKey] = signal(initialState[key]);
+//   }
+
+//   return state as {
+//     [K in StateKey]: Signal<State[K]>;
+//   };
+// }
+
+// Specify the return type of createSignalStore
+type SignalStore<
+  State extends Record<string, any>
+> = {
+  [K in keyof State]: Signal<State[K]>;
+};
+
+// Use the SignalStore type as the return type of createSignalStore
+export function createSignalStore<
+  State extends Record<string, any>
+>({
+  initialState,
+}: StoreMetadata<string, State>) {
+  const state = {} as any;
+
+  for (const key in initialState) {
+    state[key] = signal(initialState[key]);
+  }
+
+  return state as SignalStore<State>;
 }
 
-const countStore = createStore({
-  state: {
-    count: signal(0),
-  },
-  // computed: ({ count }) => ({
-  //   double: computed(() => count() * 2),
-  // }),
-});
+type Wrapper<T> = {wrapped: T};
+
+type Wrap<T extends Record<string, any>> = {
+  [K in keyof T]: Wrapper<T[K]>;
+}
+
+const wrapped: Wrap<{count: number}> = {
+  count: {wrapped: 0}
+}
+
+wrapped.count.wrapped = 1;
