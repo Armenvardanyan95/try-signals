@@ -8,9 +8,9 @@ import { CountriesService } from './countries.service';
 @Component({
   selector: 'app-countries',
   template: `
-    <input placeholder="Search..." [ngModel]="query()" (ngModelChange)="query.set($event)"/>
+    <!-- <input placeholder="Search..." [ngModel]="query()" (ngModelChange)="query.set($event)"/> -->
     <a routerLink="/todos">Todos</a>
-    <div *ngFor="let country of countries()" class="country">
+    <div *ngFor="let country of allCountries()" class="country">
       <h3>{{ country.name.common }}</h3>
       <h5>Capital: {{ country.capital?.[0] ?? 'N/A' }}</h5>
     </div>
@@ -33,11 +33,11 @@ import { CountriesService } from './countries.service';
 })
 export class CountriesComponent {
   countriesService = inject(CountriesService);
-  query = signal('');
+  // query = signal('');
   allCountries = toSignal(this.countriesService.getCountries(), { initialValue: []});
-  countries = computed(() => {
-    return this.allCountries().filter(
-      c => c.name.common.toLowerCase().includes(this.query().toLowerCase()),
-    );
-  })
+  // countries = computed(() => {
+  //   return this.allCountries().filter(
+  //     c => c.name.common.toLowerCase().includes(this.query().toLowerCase()),
+  //   );
+  // })
 }
